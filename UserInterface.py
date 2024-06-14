@@ -51,7 +51,7 @@ def main():
         if predict_button:
             if query:
                 # Send the query and file path to the backend server
-                response = requests.post("http://localhost:5000/", json={"query": query, "file_path": file_path})
+                response = requests.post("https://m1-backend-api.onrender.com/", json={"query": query, "file_path": file_path})
                 if response.status_code == 200:
                     data = response.json()
                     new_file_path = data.get('Path')
