@@ -60,37 +60,50 @@ def main():
                     
                     # Load the Excel file with updated relevancy predictions
                     df = pd.read_excel(new_file_path)
-                    # Display the first 10 rows with selected columns
-                    st.dataframe(df[['Title', 'Relevancy predicted', 'Comments made']].head(10))
-                    
-                    # Place the download buttons side by side in the right column
-                    with col2:
-                        with st.container():
-                            col2a, col2b = st.columns(2)
-                            with col2a:
-                                # Button to download the updated file
-                                with open(new_file_path, "rb") as file:
-                                    st.download_button(
-                                        label="Download",
-                                        data=file,
-                                        file_name="updated_file.xlsx",
-                                        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                                    )
-                            with col2b:
-                                # Button to download the filtered file with relevant data only
-                                with open(filtered_file_path, "rb") as file:
-                                    st.download_button(
-                                        label="Download Relevant",
-                                        data=file,
-                                        file_name="relevant_only_file.xlsx",
-                                        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                                    )
+                    st.session_state.df = df
+                    st.session_state.new_file_path = new_file_path
+                    st.session_state.filtered_file_path = filtered_file_path
+
                 else:
                     # Display error message if the backend server returns an error
                     st.write("Error: Could not process the query")
             else:
                 # Prompt the user to enter a query if it's empty
                 st.write("Please enter a query")
+
+        if 'df' in st.session_state:
+            df = st.session_state.df
+            new_file_path = st.session_state.new_file_path
+            filtered_file_path = st.session_state.filtered_file_path
+            
+            # Display the first 10 rows with selected columns
+            st.dataframe(df[['Title', 'Relevancy predicted', 'Comments made']].head(10))
+
+            # Place the download buttons side by side in the right column
+            with col2:
+                with st.container():
+                    col2a, col2b = st.columns(2)
+                    with col2a:
+                        # Button to download the updated file
+                        with open(new_file_path, "rb") as file:
+                            st.download_button(
+                                label="Download",
+                                data=file,
+                                file_name="updated_file.xlsx",
+                                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                            )
+                    with col2b:
+                        # Button to download the filtered file with relevant data only
+                        with open(filtered_file_path, "rb") as file:
+                            st.download_button(
+                                label="Download Relevant",
+                                data=file,
+                                file_name="relevant_only_file.xlsx",
+                                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                            )
+        else:
+            # Prompt the user to enter a query if it's empty
+            st.write("")
 
     # Custom CSS to style the buttons
     st.markdown("""
